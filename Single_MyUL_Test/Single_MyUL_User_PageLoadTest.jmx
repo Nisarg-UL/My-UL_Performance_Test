@@ -1,0 +1,2987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Single_User_MyUL-PageLoadTest Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="Log1_Name" elementType="Argument">
+            <stringProp name="Argument.name">Log1_Name</stringProp>
+            <stringProp name="Argument.value">Single_User_PLT_stats</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="File_Extension" elementType="Argument">
+            <stringProp name="Argument.name">File_Extension</stringProp>
+            <stringProp name="Argument.value">.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="dashboard_sleep_time" elementType="Argument">
+            <stringProp name="Argument.name">dashboard_sleep_time</stringProp>
+            <stringProp name="Argument.value">4000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname=" Page Load Time list with header" enabled="true">
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import java.io.FileWriter;
+import java.util.Arrays;
+import java.io.Writer;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in tsv
+public void writeLine(FileWriter writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+String page_load_time = &quot;Page Load Time(ms)&quot;;
+
+String current_time_stamp = &quot;${__timeShift(-y-MM-dd-HH-mm-ss-SSSS,,,,)}&quot;;
+//log.info(&quot;current_time_stamp:&quot; + current_time_stamp);
+vars.put(&quot;current_time_stamp&quot;, current_time_stamp);
+props.put(&quot;current_time_stamp&quot;, current_time_stamp);
+
+String Log1 = &quot;${Log1_Name}&quot;+&quot;${current_time_stamp}&quot;+&quot;${File_Extension}&quot;;
+//log.info(&quot;Log1:&quot; + Log1);
+vars.put(&quot;Log1&quot;, Log1);
+props.put(&quot;Log1&quot;, Log1);
+
+String[] params = Arrays.asList(&quot;Test&quot;, page_load_time);
+
+FileWriter fileWriter = new FileWriter(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;, true);
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig guiclass="com.googlecode.jmeter.plugins.webdriver.config.gui.ChromeDriverConfigGui" testclass="com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig" testname="jp@gc - Chrome Driver Config" enabled="true">
+        <boolProp name="WebDriverConfig.acceptinsecurecerts">false</boolProp>
+        <boolProp name="WebDriverConfig.reset_per_iteration">true</boolProp>
+        <stringProp name="WebDriverConfig.driver_path">C:\Program Files\apache-jmeter-5.5\chromedriver_109_win32/chromedriver.exe</stringProp>
+        <boolProp name="WebDriverConfig.dev_mode">false</boolProp>
+        <boolProp name="WebDriverConfig.maximize_browser">true</boolProp>
+        <boolProp name="WebDriverConfig.headless">true</boolProp>
+        <stringProp name="ChromeDriverConfig.additional_args"></stringProp>
+        <stringProp name="ChromeDriverConfig.binary_path"></stringProp>
+        <stringProp name="WebDriverConfig.proxy_type">SYSTEM</stringProp>
+        <stringProp name="WebDriverConfig.proxy_pac_url"></stringProp>
+        <stringProp name="WebDriverConfig.http_host"></stringProp>
+        <intProp name="WebDriverConfig.http_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_http_for_all_protocols">true</boolProp>
+        <stringProp name="WebDriverConfig.https_host"></stringProp>
+        <intProp name="WebDriverConfig.https_port">8080</intProp>
+        <stringProp name="WebDriverConfig.ftp_host"></stringProp>
+        <intProp name="WebDriverConfig.ftp_port">8080</intProp>
+        <stringProp name="WebDriverConfig.socks_host"></stringProp>
+        <intProp name="WebDriverConfig.socks_port">8080</intProp>
+        <stringProp name="WebDriverConfig.no_proxy">localhost</stringProp>
+      </com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="1-Dashboard" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_HomePage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var after = new Date().getTime();
+//WDS.log.info(&apos;Time taken at after = &apos; + after);
+var time_taken = after-before-${dashboard_sleep_time}-${dashboard_sleep_time};
+//var time_taken_extra = after-before;
+WDS.log.info(&apos;Time taken to Load Home(Dashboard) Page = &apos; + time_taken + &apos; ms&apos;);
+//WDS.log.info(&apos;Time taken to Load Home(Dashboard) Page extra = &apos; + time_taken_extra + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Dashboard-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="2-Documents" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_DocumentsPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Documents Page
+
+var before = new Date().getTime();
+
+WDS.browser.switchTo().defaultContent();
+
+var docLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[3]/div/span[2]&quot;));
+
+WDS.log.info(docLink);
+
+//xpath for document link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[3]/div/span[2]&quot;)))).click().build().perform();
+
+docLink.click();
+
+//wait until document page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Document page frame header &quot;Documents&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/documentslistcomponent/header/section/div[2]/div/h1&quot;))).isDisplayed();
+
+//check for DATASHEET TEMPLATES TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;DTDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for UL CB REPORTS TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;GCDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for UL REPORTS &amp; PROCEDURES TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;RPDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for PSN Search toggle = OFF
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[@id=&apos;rp&apos;]//span[@class=&apos;off&apos;][normalize-space()=&apos;OFF&apos;]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+var after = new Date().getTime();
+
+var time_taken = after-before;
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Documents-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="3-Documents-Results" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_Documents_Result_Page" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Documents Page
+
+WDS.browser.switchTo().defaultContent();
+
+var docLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[3]/div/span[2]&quot;));
+
+WDS.log.info(docLink);
+
+//xpath for document link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[3]/div/span[2]&quot;)))).click().build().perform();
+
+docLink.click();
+
+//wait until document page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Document page frame header &quot;Documents&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/documentslistcomponent/header/section/div[2]/div/h1&quot;))).isDisplayed();
+
+//check for DATASHEET TEMPLATES TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;DTDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for UL CB REPORTS TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;GCDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for UL REPORTS &amp; PROCEDURES TAB
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;RPDocs&apos;]/a&quot;))).isDisplayed();
+
+//check for PSN Search toggle = OFF
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[@id=&apos;rp&apos;]//span[@class=&apos;off&apos;][normalize-space()=&apos;OFF&apos;]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var before = new Date().getTime();
+
+var fileSearchBox = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;search&apos;]/section/div/div[1]/div/porcelain-search-input/input&quot;));
+fileSearchBox.click();
+fileSearchBox.sendKeys(&apos;E002&apos;);
+java.lang.Thread.sleep(500);
+fileSearchBox.sendKeys(pkg.Keys.ENTER);
+
+WDS.log.info(&quot;Here2&quot;);
+
+//wait for documents page to be loded successfully or timed out with error message
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;list-container&apos;]/section/div[4]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item[11]/div/p-tableview-list-item-cell[2]/div/span/a/span&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var after = new Date().getTime();
+
+var time_taken = after-before-500-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+if(page_load_time_var==null){
+	page_load_time_var_cal = &quot;Unable to connect to the Service, Please try again later&quot;;	
+} else {
+	page_load_time_var_cal = page_load_time_var;
+}
+
+String[] params = Arrays.asList(&quot;Documents-Results-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="4-Quotes" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_QuotesPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Quotes Page
+
+var before = new Date().getTime();
+
+WDS.browser.switchTo().defaultContent();
+
+var quoteLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[5]/div/span[2]&quot;));
+
+WDS.log.info(quoteLink);
+
+//xpath for quotes link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[5]/div/span[2]&quot;)))).click().build().perform();
+
+quoteLink.click();
+
+//wait until quotes page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Quotes page frame header &quot;Quotes&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-quote-list/div/section/section/div[2]/div[1]/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+//Quotes page frame searchbox visibility check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;Manageid&apos;]/myul-app/div/div[1]/app-quote-list/div/main/div[2]/div[2]/div[1]/search/main/div/div/div/section/div/div[2]/div/porcelain-search-input/input&quot;))).isDisplayed();
+
+var after = new Date().getTime();
+
+var time_taken = after-before;
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Quotes-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="5-Quotes-Results" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_Quotes_Result_Page" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Quotes Page
+
+WDS.browser.switchTo().defaultContent();
+
+var quoteLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[5]/div/span[2]&quot;));
+
+WDS.log.info(quoteLink);
+
+
+//xpath for quotes link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[5]/div/span[2]&quot;)))).click().build().perform();
+
+quoteLink.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until quotes page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Quotes page frame header &quot;Quotes&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-quote-list/div/section/section/div[2]/div[1]/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+//Quotes page frame searchbox visibility check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;Manageid&apos;]/myul-app/div/div[1]/app-quote-list/div/main/div[2]/div[2]/div[1]/search/main/div/div/div/section/div/div[2]/div/porcelain-search-input/input&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var before = new Date().getTime();
+
+var fileSearchBox = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;Manageid&apos;]/myul-app/div/div[1]/app-quote-list/div/main/div[2]/div[2]/div[1]/search/main/div/div/div/section/div/div[2]/div/porcelain-search-input/input&quot;));
+fileSearchBox.click();
+fileSearchBox.sendKeys(&apos;11&apos;);
+java.lang.Thread.sleep(500);
+fileSearchBox.sendKeys(pkg.Keys.ENTER);
+
+WDS.log.info(&quot;Here2&quot;);
+
+//wait for quotes page to be loded successfully or timed out with error message
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;Manageid&apos;]/myul-app/div/div[1]/app-quote-list/div/main/div[2]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item/div/p-tableview-list-item-cell[5]/div/span/mark&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var after = new Date().getTime();
+
+var time_taken = after-before-500-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+if(page_load_time_var==null){
+	page_load_time_var_cal = &quot;Unable to connect to the Service, Please try again later&quot;;	
+} else {
+	page_load_time_var_cal = page_load_time_var;
+}
+
+String[] params = Arrays.asList(&quot;Quotes-Results-PLT&quot;, page_load_time_var_cal);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="6-Orders" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_OrdersPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Orders Page
+
+var before = new Date().getTime();
+
+WDS.browser.switchTo().defaultContent();
+
+var orderLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[6]/div/span[2]&quot;));
+
+WDS.log.info(orderLink);
+
+//xpath for orders link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[6]/div/span[2]&quot;)))).click().build().perform();
+
+orderLink.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until orders page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Orders page frame header &quot;Orders&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/header/section/div[2]/div/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+////Orders page frame searchbox visibility check
+//wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/main/div[2]/div[2]/div[1]/section/div/div[1]/div/porcelain-search-input/input&quot;))).isDisplayed();
+
+//Orders page frame results visibilty check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/main/div[2]/div[2]/div[1]/section/div/div[3]/div/p&quot;))).isDisplayed();
+
+var after = new Date().getTime();
+
+var time_taken = after-before-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Orders-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="7-Orders-Results" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_Orders_Result_Page" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Orders Page
+
+WDS.browser.switchTo().defaultContent();
+
+var orderLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[6]/div/span[2]&quot;));
+
+WDS.log.info(orderLink);
+
+//xpath for prders link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[6]/div/span[2]&quot;)))).click().build().perform();
+
+orderLink.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until orders page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Orders page frame header &quot;Orders&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/header/section/div[2]/div/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+////Orders page frame searchbox visibility check
+//wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/main/div[2]/div[2]/div[1]/section/div/div[1]/div/porcelain-search-input/input&quot;))).isDisplayed();
+
+//Orders page frame results visibilty check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/main/div[2]/div[2]/div[1]/section/div/div[3]/div/p&quot;))).isDisplayed();
+
+
+var before = new Date().getTime();
+
+var fileSearchBox = WDS.browser.findElement(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/orders-list/main/div[2]/div[2]/div[1]/section/div/div[1]/div/porcelain-search-input/input&quot;));
+fileSearchBox.click();
+fileSearchBox.sendKeys(&apos;14&apos;);
+java.lang.Thread.sleep(500);
+fileSearchBox.sendKeys(pkg.Keys.ENTER);
+
+WDS.log.info(&quot;Here2&quot;);
+
+//wait for orders page to be loded successfully or timed out with error message
+
+//wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;Manageid&apos;]/myul-app/div/div[1]/app-quote-list/div/main/div[2]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item/div/p-tableview-list-item-cell[5]/div/span/mark&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var after = new Date().getTime();
+
+var time_taken = after-before-500-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Orders Result Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+if(page_load_time_var==null){
+	page_load_time_var_cal = &quot;Unable to connect to the Service, Please try again later&quot;;	
+} else {
+	page_load_time_var_cal = page_load_time_var;
+}
+
+String[] params = Arrays.asList(&quot;Orders-Results-PLT&quot;, page_load_time_var_cal);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="8-Samples" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_SamplesPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Samples Page
+
+var before = new Date().getTime();
+
+WDS.browser.switchTo().defaultContent();
+
+var sampleLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[7]/div/span[2]&quot;));
+
+WDS.log.info(sampleLink);
+
+//xpath for samples link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[7]/div/span[2]&quot;)))).click().build().perform();
+
+sampleLink.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until samples page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Samples page frame header &quot;Samples&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/header/section/div[3]/div/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+//Samples page frame searchbox visibility check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/main/div[2]/div[1]/div[2]/section/div/porcelain-toolbar/porcelain-toolbar-cell[1]/div/div/porcelain-search-input/input&quot;))).isDisplayed();
+
+//Samples page frame results visibilty check
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/main/div[2]/div[1]/div[2]/section/div/porcelain-toolbar/porcelain-toolbar-cell[3]/div/div/p&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here2&quot;);
+
+var after = new Date().getTime();
+
+var time_taken = after-before-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Samples-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="9-Samples-Results" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_SamplesPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Samples Page
+
+WDS.browser.switchTo().defaultContent();
+
+var sampleLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[7]/div/span[2]&quot;));
+
+WDS.log.info(sampleLink);
+
+//xpath for samples link 
+actions.moveToElement(wait.until(ui.ExpectedConditions.elementToBeClickable(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[3]/nav/leftnavigate/div/div/ul[2]/li[7]/div/span[2]&quot;)))).click().build().perform();
+
+sampleLink.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until samples page frame is loaded
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+//Samples page frame header &quot;Samples&quot;
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/header/section/div[3]/div/h1&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var before = new Date().getTime();
+
+var fileSearchBox = WDS.browser.findElement(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/main/div[2]/div[1]/div[2]/section/div/porcelain-toolbar/porcelain-toolbar-cell[1]/div/div/porcelain-search-input/input&quot;));
+fileSearchBox.click();
+fileSearchBox.sendKeys(&apos;57&apos;);
+java.lang.Thread.sleep(500);
+fileSearchBox.sendKeys(pkg.Keys.ENTER);
+
+WDS.log.info(&quot;Here2&quot;);
+
+//wait for samples page to be loded successfully or timed out with error message
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/myul-app/div/div[1]/app-samples-list/main/div[2]/div[2]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item/div/p-tableview-list-item-cell[3]/div/span/span&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var after = new Date().getTime();
+
+var time_taken = after-before-500-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Samples-Result-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="10-AdminTools" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="MyUL_AdminPage" enabled="true">
+          <stringProp name="WebDriverSampler.script">var pkg = JavaImporter(org.openqa.selenium);
+var ui = JavaImporter(org.openqa.selenium.support.ui);
+var pkg = JavaImporter(org.openqa.selenium,org.openqa.selenium.support.ui,org.openqa.selenium.support.events.EventFiringWebDriver);
+var actions = new org.openqa.selenium.interactions.Actions(WDS.browser)
+var wait = new ui.WebDriverWait(WDS.browser, java.time.Duration.ofSeconds(6000));
+var java_util = JavaImporter(java.util.Properties);
+
+WDS.sampleResult.sampleStart()
+
+WDS.browser.get(&quot;https://my.ul.com/&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Accept Cookies
+
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+//Login
+var before = new Date().getTime();
+//WDS.log.info(&apos;Time taken at before = &apos; + before);
+
+var signinTextBox = WDS.browser.findElement(pkg.By.xpath(&apos;.//input[@id=&quot;email&quot;]&apos;));
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Email&apos;)]&quot;))).isDisplayed();
+signinTextBox.click;
+signinTextBox.sendKeys(&apos;secretsquirrel1017@gmail.com&apos;);
+var nextButton = WDS.browser.findElement(pkg.By.className(&quot;login__submit&quot;));
+nextButton.click();
+wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;.//label[contains(text(),&apos;Password&apos;)]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Username Entered&quot;);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;password&quot;)));
+
+var passwdTextBox = WDS.browser.findElement(pkg.By.id(&quot;password&quot;));
+passwdTextBox.click();
+passwdTextBox.sendKeys(&apos;Later@22&apos;);
+
+WDS.log.info(&quot;Password Entered&quot;);
+var signinButton = WDS.browser.findElement(pkg.By.id(&apos;continue&apos;));
+signinButton.click();
+
+WDS.log.info(&quot;Login Button Submit&quot;);
+
+var login_time = new Date().getTime();
+//WDS.log.info(&apos;Time taken at Login = &apos; + login_time);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;)));
+var cookiesButton = WDS.browser.findElement(pkg.By.xpath(&apos;//button[text()=&quot;Accept All Cookies&quot;]&apos;));
+cookiesButton.click();
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Dashboard&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Documents&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;Marketplace&apos;)]&quot;))).isDisplayed();
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//div[starts-with(@id,&apos;results-count&apos;)]&quot;))).isDisplayed();
+//wait.until(ui.ExpectedConditions.presenceOfElementLocated(pkg.By.xpath(&quot;//span[starts-with(@title,&apos;PATH SmartSuite&apos;)]&quot;))).isDisplayed();
+
+wait.until(ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt(pkg.By.id(&quot;content-iframe1&quot;)));
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+WDS.log.info(&quot;DashBoard Displayed&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//Admin-Tools Page
+
+var before = new Date().getTime();
+
+WDS.browser.switchTo().defaultContent();
+
+var adminButton = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;canvas1&apos;]&quot;));
+
+WDS.log.info(adminButton);
+
+adminButton.click();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait until admint tools user menu drop down appears
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[2]/navbar/header/div[4]/div/div/li/div/div&quot;)));
+
+//wait until admint tools account settings link is visible
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[2]/navbar/header/div[4]/div/div/li/div/div/ul/li[2]/a/div[2]&quot;))).isDisplayed();
+
+WDS.log.info(&quot;Here1&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+var accsettingLink = WDS.browser.findElement(pkg.By.xpath(&quot;//*[@id=&apos;myUL-app-start&apos;]/main/section[2]/navbar/header/div[4]/div/div/li/div/div/ul/li[2]/a/div[2]&quot;));
+accsettingLink.click();
+java.lang.Thread.sleep(500);
+
+WDS.log.info(&quot;Here2&quot;);
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+//wait for Admin Settings Details page to be loded successfully or timed out with error message
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.id(&quot;content-iframe1&quot;)));
+
+var iframe = WDS.browser.findElement(pkg.By.id(&quot;content-iframe1&quot;));
+WDS.log.info(&quot;Here3&quot;);
+WDS.browser.switchTo().frame(iframe);
+
+wait.until(ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;/html/body/my-app/div/div[1]/div[2]/viewdetail/div/div[4]/div/div/div[1]/div/h1&quot;))).isDisplayed();
+
+java.lang.Thread.sleep(${dashboard_sleep_time});
+
+////wait.until(ui.ExpectedConditions.or(
+////	ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;list-container&apos;]/section/div[4]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item[11]/div/p-tableview-list-item-cell[2]/div/span/a/span&quot;))).isDisplayed(),
+////	ui.ExpectedConditions.visibilityOfElementLocated(pkg.By.xpath(&quot;//*[@id=&apos;list-container&apos;]/section/div[4]/p-tableview-list/div/p-tableview-list-body/p-tableview-list-item[11]/div/p-tableview-list-item-cell[2]/div/span/a/span&quot;))).isDisplayed());
+
+var after = new Date().getTime();
+
+var time_taken = after-before-500-${dashboard_sleep_time}-${dashboard_sleep_time}-${dashboard_sleep_time}-${dashboard_sleep_time};
+//var time_taken = (((after-before-5000)/1000)/60);
+
+WDS.log.info(&apos;Time taken to Load Documents Page = &apos; + time_taken + &apos; ms&apos;);
+WDS.vars.put(&apos;page_load_time&apos;, time_taken);
+
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">javascript</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store Page-Load-Time in logs" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.jmeter.services.FileServer;
+import java.text.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.Writer;
+
+//Default separator
+char SEPARATOR = &apos;\t&apos;;
+
+//function write line in csv
+public void writeLine(Writer writer, String[] params, char separator)
+{
+   boolean firstParam = true;
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String param = &quot;asset_id&quot;;
+   
+   for (int i = 0; i &lt; params.length; i++)
+   {
+      //get param
+      param = params[i];
+      log.info(param);
+       
+         //if the first param in the line, separator is not needed
+       if (!firstParam) 
+       {
+           stringBuilder.append(separator);
+       }
+
+         //Add param to line
+       stringBuilder.append(param);
+      
+       firstParam = false;
+   }
+
+   //prepare file to next line
+   stringBuilder.append(System.getProperty(&quot;line.separator&quot;));
+
+   //add to file the line
+   log.info(stringBuilder.toString());
+   writer.append(stringBuilder.toString());
+
+}
+
+Log1 = props.get(&quot;Log1&quot;);
+
+
+page_load_time_var = vars.get(&quot;page_load_time&quot;);
+//log.info(&quot;page_load_time_in_logs:&quot; + page_load_time_var);
+
+String[] params = Arrays.asList(&quot;Admin_Tools-PLT&quot;, page_load_time_var);
+
+//log.info(&quot;params:&quot; + params);
+
+Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(FileServer.getFileServer().getBaseDir() + File.separator+File.separator+File.separator+File.separator+&quot;${Log1}&quot;), true), StandardCharsets.UTF_8);
+
+writeLine(fileWriter, params, SEPARATOR);
+
+//proper close to file
+fileWriter.flush();
+fileWriter.close();
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
